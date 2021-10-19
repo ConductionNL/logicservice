@@ -2,8 +2,8 @@ annotations:
     artifacthub.io/containsSecurityUpdates: "true"
 apiVersion: v2
 appVersion: V1.0
-description: 'Het Proto Component vormt zowel de gemeenschappelijke basis onder alle componenten, als een “template” voor het maken van nieuwe componenten.'
-name: proto-component-commonground
+description: 'The LogicService performs small logic for various e-services that is not yet available in for example HaalCentraal specification or in the implementation in various municipalities.'
+name: logicservice
 version: 1.0.0
 home: https://www.conduction.nl
 icon: https://conductionnl.github.io/images/conduction_avatar_blue_on_transparant.svg
