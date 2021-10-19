@@ -1,0 +1,26 @@
+{{ $redisServiceName := printf "%s-redis" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  #namespace: {{ .Values.config.env }}
+  labels:
+    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    helm.sh/chart: {{ include "chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  app-version: {{ .Values.config.version | quote }}
+  app-corsAllowOrigin: {{ .Values.php.corsAllowOrigin | quote }}
+  cache: {{ .Values.config.cache | quote }}
+  debug: {{ .Values.config.debug | quote }}
+  trusted-proxies: {{ join "," .Values.php.trustedProxies }}
+  trusted-hosts: {{ .Values.php.trustedHosts | quote }}
+  php-service: {{ .Release.Name }}-php  
+
+  {{- if .Values.redis.enabled }}
+  redis-host: {{ $redisServiceName | quote }}
+  redis-port: {{ .Values.redis.redisPort | toString | quote }}
+
+  {{- end }}
