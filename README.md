@@ -2,7 +2,10 @@
 
 Description
 ----
-Naast deze JSON rest API is er ook een [graphql](/graphql) interface beschikbaar.
+The LogicService performs small logic for various e-services that is not yet available in for example HaalCentraal specification or in the implementation in various municipalities.
+The LogicService can do the following logic:
+- Determine if someone is eligible to file a notification
+- Determine the possible co-movers of the person who files the notification
 
 Additional Information
 ----
