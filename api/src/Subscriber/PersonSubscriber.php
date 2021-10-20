@@ -10,6 +10,7 @@ use App\Service\PersonService;
 use Conduction\CommonGroundBundle\Service\CommonGroundService;
 use Conduction\CommonGroundBundle\Service\SerializerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -19,11 +20,13 @@ class PersonSubscriber implements EventSubscriberInterface
 {
     private SerializerService $serializerService;
     private PersonService $personService;
+    private ParameterBagInterface $parameterBag;
 
-    public function __construct(SerializerInterface $serializer, CommonGroundService $commonGroundService, EntityManagerInterface $entityManager)
+    public function __construct(SerializerInterface $serializer, CommonGroundService $commonGroundService, EntityManagerInterface $entityManager, ParameterBagInterface $parameterBag)
     {
         $this->personService = new PersonService($commonGroundService, $entityManager);
         $this->serializerService = new SerializerService($serializer);
+        $this->parameterBag = $parameterBag;
     }
 
     public static function getSubscribedEvents()
@@ -41,7 +44,7 @@ class PersonSubscriber implements EventSubscriberInterface
         if($route != 'api_people_post_collection' || !($resource instanceof Person)){
             return;
         }
-        $this->serializerService->setResponse($this->personService->checkPerson($resource), $event, ['ignore_attributes' => ['id']]);
+        $this->serializerService->setResponse($this->personService->checkPerson($resource, $this->parameterBag->get('app_mode')), $event, ['ignore_attributes' => ['id']]);
     }
 
 }

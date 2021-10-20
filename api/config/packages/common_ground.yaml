@@ -104,6 +104,7 @@ parameters:
 
     app_certificate: "%env(APP_CERT)%"
     app_ssl_key: "%env(APP_KEY)%"
+    app_mode: "servicegateway"
 
     # Busnes Engine
     env(APP_COMMONGROUND_BE_LOCATION): "https://ac.%env(APP_DOMAIN)%"

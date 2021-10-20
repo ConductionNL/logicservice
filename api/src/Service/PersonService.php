@@ -8,6 +8,10 @@ use App\Entity\Person;
 use Conduction\CommonGroundBundle\Service\CommonGroundService;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Promise\Promise;
+use GuzzleHttp\Promise\Utils;
+use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 
 class PersonService
 {
@@ -106,7 +110,7 @@ class PersonService
 
     public function getQuery(array $person, array $relatives): array
     {
-        $query = ['burgerservicenummer' => implode(',', $relatives), ];
+            $query = ['burgerservicenummer' => implode(',', $relatives), ];
 //        if(isset($person['verblijfplaats']['nummeraanduidingIdentificatie'])){
 //            $query['verblijfplaats__nummeraanduidingIdentificatie'] = $person['verblijfplaats']['nummeraanduidingIdentificatie'];
 //        } else {
@@ -115,25 +119,75 @@ class PersonService
             isset($person['verblijfplaats']['huisnummertoevoeging']) ? $query['verblijfplaats__huisnummertoevoeging'] = $person['verblijfplaats']['huisnummertoevoeging'] : null;
             isset($person['verblijfplaats']['huisletter']) ? $query['verblijfplaats__huisletter'] = $person['verblijfplaats']['huisletter'] : null;
 //        }
+
         return $query;
     }
 
-    public function getCoMovers(array $person): array
+    public function matchAddress(...$people): array
+    {
+        $address = array();
+        foreach($people as $key=>$person){
+            if(is_array($person) && !$address){
+                $address = $person['verblijfplaats'];
+            } elseif(is_array($person) && !isset($person['verblijfplaats']['nummeraanduidingIdentificatie']) || !isset($address['nummeraanduidingIdentificatie'])) {
+                $result = true;
+                (!isset($person['verblijfplaats']['postcode']) || !isset($address['postcode']) || $person['verblijfplaats']['postcode'] !== $address['postcode']) ? $result = false : null;
+                (!isset($person['verblijfplaats']['huisnummer']) || !isset($address['huisnummer']) || $person['verblijfplaats']['huisnummer'] !== $address['huisnummer']) ? $result = false : null;
+                (isset($person['verblijfplaats']['huisnummerToevoeging']) xor isset($address['huisnummerToevoeging']) || (isset($address['huisnummerToevoeging']) && isset($person['verblijfplaats']['huisnummerToevoeging']) && $address['huisnummerToevoeging'] !== $person['verblijfplaats']['huisnummerToevoeging'])) ? $result = false : null;
+                (isset($person['verblijfplaats']['huisletter']) xor isset($address['huisletter']) || (isset($address['huisletter']) && isset($person['verblijfplaats']['huisletter']) && $address['huisletter'] !== $person['verblijfplaats']['huisletter'])) ? $result = false : null;
+                if(!$result){
+                    unset($people[$key]);
+                }
+                continue;
+            } elseif(is_array($person)) {
+                $result = true;
+                $person['verblijfplaats']['nummeraanduidingIdentificatie'] !== $address['nummeraanduidingIdentificatie'] ? $result = false : null;
+                if(!$result){
+                    unset($people[$key]);
+                }
+                continue;
+            }
+        }
+        return $people;
+    }
+
+    public function getCoMoversPerBSN(array $person, array $relatives): array
+    {
+        $coMovers = array();
+        $promises = array();
+        foreach($relatives as $relative){
+            $promises[] = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $relative], [], true, true);
+        }
+
+        $responses = Utils::settle($promises)->wait();
+        foreach($responses as $response){
+            if($response instanceof ResponseInterface){
+                $coMovers = json_decode($response->getBody()->getContents(), true);
+            }
+        }
+        $coMovers = $this->matchAddress(array_unshift($coMovers, $person));
+        return $coMovers;
+    }
+
+    public function getCoMovers(array $person, $type): array
     {
         if(!$this->checkAge($person, 18)){
             return [];
         }
         $coMovers = [];
-        if($relatives = $this->getRelatives($person)){
+        $relatives = $this->getRelatives($person);
+        if($relatives && $type == 'vrijbrp'){
             $coMovers = $this->commonGroundService->getResourceList(['component' => 'brp', 'type' => 'ingeschrevenpersonen'], $this->getQuery($person, $relatives));
-        }
-        if(isset($coMovers['_embedded']['ingeschrevenpersonen'])){
-            $coMovers = $coMovers['_embedded']['ingeschrevenpersonen'];
+            if(isset($coMovers['_embedded']['ingeschrevenpersonen'])){
+                $coMovers = $coMovers['_embedded']['ingeschrevenpersonen'];
+            }
+        } elseif ($relatives && $type == 'servicegateway') {
+            $this->getCoMoversPerBSN($person, $relatives);
         }
         return $coMovers;
     }
 
-    public function checkPerson(Person $person): Person
+    public function checkPerson(Person $person, string $type): Person
     {
         try{
             $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()], ['geefFamilie' => 'true']);
@@ -146,7 +200,7 @@ class PersonService
         }
 
         $person->setIsEligible($this->checkIsEligible($personArray));
-        $person->setCoMovers($this->getCoMovers($personArray));
+        $person->setCoMovers($this->getCoMovers($personArray, $type));
 
         $this->entityManager->persist($person);
         return $person;
