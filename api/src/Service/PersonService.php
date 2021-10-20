@@ -149,7 +149,7 @@ class PersonService
                 continue;
             }
         }
-        return $people;
+        return array_values($people);
     }
 
     public function getCoMoversPerBSN(array $person, array $relatives): array
