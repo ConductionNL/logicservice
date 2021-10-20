@@ -59,6 +59,10 @@ class PersonService
             foreach($person['_embedded']['kinderen'] as $kind){
                 isset($kind['burgerservicenummer']) ? $result[] = $kind['burgerservicenummer'] : null;
             }
+        } elseif(isset($person['kinderen'])) {
+            foreach($person['kinderen'] as $kind){
+                isset($kind['bsn']) ? $result[] = $kind['bsn'] : null;
+            }
         }
         return $result;
     }
@@ -69,6 +73,10 @@ class PersonService
             foreach ($person['_embedded']['ouders'] as $ouder) {
                 isset($ouder['burgerservicenummer']) ? $result[] = $ouder['burgerservicenummer'] : null;
             }
+        } elseif(isset($person['ouders'])) {
+            foreach($person['ouders'] as $ouder){
+                isset($ouder['bsn']) ? $result[] = $ouder['bsn'] : null;
+            }
         }
         return $result;
     }
@@ -78,6 +86,10 @@ class PersonService
         if(isset($person['_embedded']['partners'])){
             foreach($person['_embedded']['partners'] as $partner){
                 isset($partner['burgerservicenummer']) ? $result[] = $partner['burgerservicenummer'] : null;
+            }
+        } elseif(isset($person['partners'])) {
+            foreach($person['partners'] as $partner){
+                isset($partner['bsn']) ? $result[] = $partner['bsn'] : null;
             }
         }
         return $result;
@@ -124,9 +136,13 @@ class PersonService
     public function checkPerson(Person $person): Person
     {
         try{
-            $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()], ['expand' => 'ouders,kinderen,partners']);
+            $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()], ['geefFamilie' => 'true']);
         } catch(ClientException $e){
-            $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()]);
+            try{
+                $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()], ['expand' => 'ouders,kinderen,partners']);
+            } catch(ClientException $e){
+                $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()]);
+            }
         }
 
         $person->setIsEligible($this->checkIsEligible($personArray));
