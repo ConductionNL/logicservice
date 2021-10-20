@@ -30,16 +30,16 @@ spec:
       volumes:
         - name: dependencies
           secret:
-            secretName: {{ .Chart.Name }}-dependencies
+            secretName: {{ include "template.fullname" . }}-dependencies
             defaultMode: 420
         {{- if or (and .Values.security.certificate.certificate .Values.security.certificate.privateKey) .Values.security.certificate.existingSecret }}
         - name: certificates
           secret:
-            secretName: {{ if .Values.security.certificate.existingSecret }}{{ .Values.security.certificate.existingSecret }}{{ else }}{{ .Chart.Name }}-certificate{{ end }}
+            secretName: {{ if .Values.security.certificate.existingSecret }}{{ .Values.security.certificate.existingSecret }}{{ else }}{{ include "template.fullname" . }}-certificate{{ end }}
             defaultMode: 420
         {{- end }}
       containers:
-        - name: {{ .Chart.Name }}-php
+        - name: {{ include "template.fullname" . }}-php
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.php.repository }}:{{ .Values.php.tag | default .Chart.AppVersion }}"
@@ -69,74 +69,74 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: trusted-hosts
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: TRUSTED_PROXIES
               valueFrom:
                 configMapKeyRef:
                   key: trusted-proxies
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: APP_VERSION
               valueFrom:
                 configMapKeyRef:
                   key: app-version
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: APP_DEBUG
               valueFrom:
                 configMapKeyRef:
                   key: debug
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: APP_CACHE
               valueFrom:
                 configMapKeyRef:
                   key: cache
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   key: database-url
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: CORS_ALLOW_ORIGIN
               valueFrom:
                 configMapKeyRef:
                   key: app-corsAllowOrigin
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: APP_APPLICATION_KEY
               valueFrom:
                 secretKeyRef:
                   key: app_application_key
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             {{ if .Values.redis.enabled }}
             - name: REDIS_HOST
               valueFrom:
                 configMapKeyRef:
                   key: redis-host
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: REDIS_PORT
               valueFrom:
                 configMapKeyRef:
                   key: redis-port
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             {{- end }}
             {{- if or (and .Values.security.certificate.certificate .Values.security.certificate.privateKey) .Values.security.certificate.existingSecret }}
             - name: APP_CERT
               valueFrom:
                 secretKeyRef:
                   key: certificate
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             - name: APP_KEY
               valueFrom:
                 secretKeyRef:
                   key: private_key
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
             {{- end }}
             - name: APP_URL
               valueFrom:
                 configMapKeyRef:
                   key: url
-                  name: {{ .Chart.Name }}
+                  name: {{ include "template.fullname" . }}
           resources:
             {{- toYaml .Values.php.resources | nindent 12 }}
-        - name: {{ .Chart.Name }}-nginx
+        - name: {{ include "template.fullname" . }}-nginx
           securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.nginx.repository }}:{{ .Values.nginx.tag | default .Chart.AppVersion }}"

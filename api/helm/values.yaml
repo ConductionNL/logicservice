@@ -1,4 +1,4 @@
-# Default values for adresservice.
+# Default values for logicservice.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -38,7 +38,7 @@ security:
 replicaCount: 2
 
 php:
-  repository: ghcr.io/conductionnl/adresservice-php
+  repository: ghcr.io/conductionnl/logicservice-php
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -53,7 +53,7 @@ php:
 #      memory: 256Mi
 
 nginx:
-  repository: ghcr.io/conductionnl/adresservice-nginx
+  repository: ghcr.io/conductionnl/logicservice-nginx
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
@@ -128,7 +128,7 @@ service:
 ingress:
   enabled: false
   className: "nginx"
-  hostname: adresservice.local
+  hostname: logicservice.local
   path: /
   pathType: ImplementationSpecific
   annotations: {}

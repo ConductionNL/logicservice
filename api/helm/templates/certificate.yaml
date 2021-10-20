@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Chart.Name }}-certificate
+  name: {{ include "template.fullname" . }}-certificate
   labels:
   {{- include "template.labels" . | nindent 4 }}
 type: kubernetes.io/tls
