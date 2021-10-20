@@ -5,20 +5,20 @@ entries:
       artifacthub.io/containsSecurityUpdates: "true"
     apiVersion: v2
     appVersion: V1.0
-    created: "2021-10-20T09:09:42.1307094+02:00"
+    created: "2021-10-20T09:32:43.4539335+02:00"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
       repository: https://charts.bitnami.com/bitnami
-      version: 10.1.1
+      version: 10.10.3
     - condition: redis.enabled
       name: redis
       repository: https://charts.bitnami.com/bitnami
-      version: 12.7.7
+      version: 15.3.2
     description: The LogicService performs small logic for various e-services that
       is not yet available in for example HaalCentraal specification or in the implementation
       in various municipalities.
-    digest: 75a3fbcd77854a103ac1811f5193968660ac91e3ca5bcbe31e49c95571c20d48
+    digest: 3d2f93eaf4a6d346d0d57e9b7fb039f07857f1518dcc20a866358aeb4f934771
     home: https://www.conduction.nl
     icon: https://conductionnl.github.io/images/conduction_avatar_blue_on_transparant.svg
     keywords:
@@ -42,17 +42,17 @@ entries:
   - annotations:
       category: Database
     apiVersion: v2
-    appVersion: 11.10.0
-    created: "2021-10-20T09:09:42.1413823+02:00"
+    appVersion: 11.13.0
+    created: "2021-10-20T09:32:43.4660101+02:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
       version: 1.x.x
     description: Chart for PostgreSQL, an object-relational database management system
       (ORDBMS) with an emphasis on extensibility and on standards-compliance.
-    digest: eebe8f456cf98d5927a35666d1d899174dc4d3e09f26788033f761527bc90749
+    digest: 1b7c4bfba1e8257793e8d6690e02b86c0bdac99922e1fa74b6a7df9d800938ab
     home: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
-    icon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-110x117.png
+    icon: https://bitnami.com/assets/stacks/postgresql/img/postgresql-stack-220x234.png
     keywords:
     - postgresql
     - postgres
@@ -70,14 +70,14 @@ entries:
     - https://github.com/bitnami/bitnami-docker-postgresql
     - https://www.postgresql.org/
     urls:
-    - charts/postgresql-10.1.1.tgz
-    version: 10.1.1
+    - charts/postgresql-10.10.3.tgz
+    version: 10.10.3
   redis:
   - annotations:
       category: Database
     apiVersion: v2
-    appVersion: 6.0.11
-    created: "2021-10-20T09:09:42.1541087+02:00"
+    appVersion: 6.2.5
+    created: "2021-10-20T09:32:43.4880058+02:00"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -87,7 +87,7 @@ entries:
     description: Open source, advanced key-value store. It is often referred to as
       a data structure server since keys can contain strings, hashes, lists, sets
       and sorted sets.
-    digest: 2d70861d16fc410ed6d6c818b97f7b0d519031147e5c7b42c5691d4c38742c44
+    digest: f8fa3b0bdaecf7f9aa1669b027c5452f7efaab21c10b0dbcf7148e17c54ac5b7
     home: https://github.com/bitnami/charts/tree/master/bitnami/redis
     icon: https://bitnami.com/assets/stacks/redis/img/redis-stack-220x234.png
     keywords:
@@ -104,6 +104,6 @@ entries:
     - https://github.com/bitnami/bitnami-docker-redis
     - http://redis.io/
     urls:
-    - charts/redis-12.7.7.tgz
-    version: 12.7.7
-generated: "2021-10-20T09:09:42.109598+02:00"
+    - charts/redis-15.3.2.tgz
+    version: 15.3.2
+generated: "2021-10-20T09:32:43.4353126+02:00"
