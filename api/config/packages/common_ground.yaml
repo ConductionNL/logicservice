@@ -58,6 +58,9 @@ parameters:
     env(APP_EHERKENNING_LOCATION): "https://zuid-drecht.nl/eherkenning"
     env(BADGES): ""
 
+    env(APP_CERT): ""
+    env(APP_KEY): ""
+
     app_env: "%env(APP_ENV)%"
     app_container: "%env(APP_CONTAINER)%"
     app_debug: "%env(APP_DEBUG)%"
@@ -98,6 +101,9 @@ parameters:
     idin_id: "%env(IDIN_ID)%"
     idin_secret: "%env(IDIN_SECRET)%"
     badges: "%env(BADGES)%"
+
+    app_certificate: "%env(APP_CERT)%"
+    app_ssl_key: "%env(APP_KEY)%"
 
     # Busnes Engine
     env(APP_COMMONGROUND_BE_LOCATION): "https://ac.%env(APP_DOMAIN)%"
