@@ -174,17 +174,16 @@ class PersonService
         if(!$this->checkAge($person, 18)){
             return [];
         }
-        $coMovers = [];
         $relatives = $this->getRelatives($person);
         if($relatives && $type == 'vrijbrp'){
             $coMovers = $this->commonGroundService->getResourceList(['component' => 'brp', 'type' => 'ingeschrevenpersonen'], $this->getQuery($person, $relatives));
             if(isset($coMovers['_embedded']['ingeschrevenpersonen'])){
-                $coMovers = $coMovers['_embedded']['ingeschrevenpersonen'];
+                return $coMovers['_embedded']['ingeschrevenpersonen'];
             }
         } elseif ($relatives && $type == 'servicegateway') {
-            $this->getCoMoversPerBSN($person, $relatives);
+            return $this->getCoMoversPerBSN($person, $relatives);
         }
-        return $coMovers;
+        return [];
     }
 
     public function checkPerson(Person $person, string $type): Person
@@ -204,7 +203,6 @@ class PersonService
                 $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()]);
             }
         }
-        var_dump($personArray);
 
         $person->setIsEligible($this->checkIsEligible($personArray));
         $person->setCoMovers($this->getCoMovers($personArray, $type));
