@@ -161,11 +161,11 @@ class PersonService
 
         $responses = Utils::settle($promises)->wait();
         foreach($responses as $response){
-            if($response instanceof ResponseInterface){
-                $coMovers = json_decode($response->getBody()->getContents(), true);
+            if(isset($response['value'])){
+                $coMovers[] = json_decode($response['value']->getBody()->getContents(), true);
             }
         }
-        $coMovers = $this->matchAddress(array_unshift($coMovers, $person));
+        $coMovers = $this->matchAddress($person, ...$coMovers);
         return $coMovers;
     }
 
@@ -189,15 +189,22 @@ class PersonService
 
     public function checkPerson(Person $person, string $type): Person
     {
-        try{
-            $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()], ['geefFamilie' => 'true']);
-        } catch(ClientException $e){
+        if($type == 'servicegateway'){
+            try{
+                $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()], ['geefFamilie' => 'true']);
+            } catch(ClientException $e){
+                $person->setIsEligible(false);
+                $person->setCoMovers([]);
+                return $person;
+            }
+        } else {
             try{
                 $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()], ['expand' => 'ouders,kinderen,partners']);
             } catch(ClientException $e){
                 $personArray = $this->commonGroundService->getResource(['component' => 'brp', 'type' => 'ingeschrevenpersonen', 'id' => $person->getBrp()]);
             }
         }
+        var_dump($personArray);
 
         $person->setIsEligible($this->checkIsEligible($personArray));
         $person->setCoMovers($this->getCoMovers($personArray, $type));
