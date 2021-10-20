@@ -129,6 +129,7 @@ class PersonService
         foreach($people as $key=>$person){
             if(is_array($person) && !$address){
                 $address = $person['verblijfplaats'];
+                unset($people[$key]);
             } elseif(is_array($person) && !isset($person['verblijfplaats']['nummeraanduidingIdentificatie']) || !isset($address['nummeraanduidingIdentificatie'])) {
                 $result = true;
                 (!isset($person['verblijfplaats']['postcode']) || !isset($address['postcode']) || $person['verblijfplaats']['postcode'] !== $address['postcode']) ? $result = false : null;
