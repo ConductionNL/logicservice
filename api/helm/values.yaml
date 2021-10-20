@@ -14,6 +14,7 @@ config:
     - 10.0.0.0/8
     - 172.16.0.0/12
     - 192.168.0.0/16
+  mode: "vrijbrp"
 
 security:
   applicationKey: "45c1a4b6-59d3-4a6e-86bf-88a872f35845"

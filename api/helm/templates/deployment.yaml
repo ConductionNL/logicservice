@@ -134,6 +134,8 @@ spec:
                 configMapKeyRef:
                   key: url
                   name: {{ include "template.fullname" . }}
+            - name: APP_MODE
+              value: {{ .Values.config.mode }}
           resources:
             {{- toYaml .Values.php.resources | nindent 12 }}
         - name: {{ include "template.fullname" . }}-nginx

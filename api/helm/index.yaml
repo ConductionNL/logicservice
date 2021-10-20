@@ -5,7 +5,7 @@ entries:
       artifacthub.io/containsSecurityUpdates: "true"
     apiVersion: v2
     appVersion: V1.0
-    created: "2021-10-20T10:04:07.4258282+02:00"
+    created: "2021-10-20T11:33:30.5027948Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -18,7 +18,7 @@ entries:
     description: The LogicService performs small logic for various e-services that
       is not yet available in for example HaalCentraal specification or in the implementation
       in various municipalities.
-    digest: f264e647cec24841f1a417d17b4cae0d31975b67e956275791eaf0ad532a1db3
+    digest: a0b20228d0ed129c07673a61afbb8f47ac9226e7bfacd1ab7258c3dd78e552a9
     home: https://www.conduction.nl
     icon: https://conductionnl.github.io/images/conduction_avatar_blue_on_transparant.svg
     keywords:
@@ -43,7 +43,7 @@ entries:
       category: Database
     apiVersion: v2
     appVersion: 11.13.0
-    created: "2021-10-20T10:04:07.4363022+02:00"
+    created: "2021-10-20T11:33:30.5300172Z"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -77,7 +77,7 @@ entries:
       category: Database
     apiVersion: v2
     appVersion: 6.2.5
-    created: "2021-10-20T10:04:07.4488712+02:00"
+    created: "2021-10-20T11:33:30.5455241Z"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -106,4 +106,4 @@ entries:
     urls:
     - charts/redis-15.3.2.tgz
     version: 15.3.2
-generated: "2021-10-20T10:04:07.4046332+02:00"
+generated: "2021-10-20T11:33:30.4781161Z"
