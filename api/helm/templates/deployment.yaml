@@ -117,6 +117,18 @@ spec:
                   key: redis-port
                   name: {{ .Chart.Name }}
             {{- end }}
+            {{- if or (and .Values.security.certificate.certificate .Values.security.certificate.privateKey) .Values.security.certificate.existingSecret }}
+            - name: APP_CERT
+              valueFrom:
+                secretKeyRef:
+                  key: certificate
+                  name: {{ .Chart.Name }}
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: private_key
+                  name: {{ .Chart.Name }}
+            {{- end }}
             - name: APP_URL
               valueFrom:
                 configMapKeyRef:
