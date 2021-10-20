@@ -60,6 +60,7 @@ parameters:
 
     env(APP_CERT): ""
     env(APP_KEY): ""
+    env(APP_MODE): "vrijbrp"
 
     app_env: "%env(APP_ENV)%"
     app_container: "%env(APP_CONTAINER)%"
@@ -104,7 +105,7 @@ parameters:
 
     app_certificate: "%env(APP_CERT)%"
     app_ssl_key: "%env(APP_KEY)%"
-    app_mode: "servicegateway"
+    app_mode: "%env(APP_MODE)%"
 
     # Busnes Engine
     env(APP_COMMONGROUND_BE_LOCATION): "https://ac.%env(APP_DOMAIN)%"
